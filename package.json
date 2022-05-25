@@ -1,0 +1,27 @@
+{
+  "name": "movies-explorer-api",
+  "version": "1.0.0",
+  "description": "movies-explorer-api",
+  "main": "app.js",
+  "scripts": {
+    "lint": "npx eslint .",
+    "start": "node app.js",
+    "dev": "nodemon app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Alenfulia/movies-explorer-api.git"
+  },
+  "author": "Alyona Surkova",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Alenfulia/movies-explorer-api/issues"
+  },
+  "homepage": "https://github.com/Alenfulia/movies-explorer-api#readme",
+  "devDependencies": {
+    "eslint": "^8.2.0",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-plugin-import": "^2.25.2",
+    "nodemon": "^2.0.16"
+  }
+}
