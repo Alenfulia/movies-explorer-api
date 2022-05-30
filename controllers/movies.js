@@ -1,6 +1,7 @@
 const Movie = require('../models/movie');
 const BadRequestError = require('../errors/BadRequestError');
 const NotFoundError = require('../errors/NotFoundError');
+const ForbiddenError = require('../errors/ForbiddenError');
 
 // Создание сохраненного фильма
 module.exports.createMovie = (req, res, next) => {
@@ -55,6 +56,9 @@ module.exports.removeMovie = (req, res, next) => {
     .then((movie) => {
       if (!movie) {
         throw new NotFoundError('Фильм не найден.');
+      }
+      if (movie.owner.valueOf() !== req.user._id) {
+        throw new ForbiddenError('Фильм сохранен другим пользователем. Можно удалить только свою карточку.');
       }
       movie.remove();
       res.status(200).send({ message: 'Вы успешно удалили фильм из сохраненных фильмов!' });
