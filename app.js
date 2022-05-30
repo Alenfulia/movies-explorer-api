@@ -1,13 +1,40 @@
 const express = require('express');
+require('dotenv').config();
 const mongoose = require('mongoose');
+const bodyParser = require('body-parser');
+const router = require('./routes/index');
+const { createUser, login } = require('./controllers/users');
+const auth = require('./middlewares/auth');
+const errorHandler = require('./middlewares/errorHandler');
+const { signUp, signIn } = require('./middlewares/validations');
+const NotFoundError = require('./errors/NotFoundError');
 
-const { PORT = 3001 } = process.env;
+const { PORT = 3000 } = process.env;
 const app = express();
 
-mongoose.connect('mongodb://localhost:27017/bitfilmsdb', {
+mongoose.connect('mongodb://localhost:27017/moviesdb', {
   useNewUrlParser: true,
   useUnifiedTopology: true,
-}, console.log('Connected to MongoDB'));
+});
+
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+
+app.post('/signup', signUp, createUser);
+app.post('/signin', signIn, login);
+
+// Авторизация
+app.use(auth);
+
+// Роуты, к которым нужна авторизация
+app.use(router);
+
+// Запрос к роуту, который несуществует
+app.use('*', (req, res, next) => {
+  next(new NotFoundError('Страница не найдена'));
+});
+
+app.use(errorHandler); // Централизованный обработчик ошибок
 
 app.listen(PORT, () => {
   console.log(`App listening on port ${PORT}`);
