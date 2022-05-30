@@ -21,5 +21,5 @@
 
 ## Запуск проекта локально:
 
-npm run start — запускает сервер
-npm run dev — запускает сервер с hot-reload
+`npm run start` — запускает сервер   
+`npm run dev` — запускает сервер с hot-reload
