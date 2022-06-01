@@ -29,6 +29,9 @@ module.exports.updateUser = (req, res, next) => {
     .catch((err) => {
       if (err.name === 'ValidationError') {
         next(new BadRequestError('Некорректные данные пользователя.'));
+      }
+      if (err.code === 11000) {
+        next(new ConflictError(`Пользователь с ${email} уже существует.`));
       } else {
         next(err);
       }
@@ -38,9 +41,6 @@ module.exports.updateUser = (req, res, next) => {
 // Создание нового пользователя
 module.exports.createUser = (req, res, next) => {
   const { name, email, password } = req.body;
-  if (!email || !password) {
-    next(new BadRequestError('Неправильный логин или пароль.'));
-  }
   return User.findOne({ email }).then((user) => {
     if (user) {
       next(new ConflictError(`Пользователь с ${email} уже существует.`));
@@ -59,7 +59,7 @@ module.exports.createUser = (req, res, next) => {
       _id: user._id,
     }))
     .catch((err) => {
-      if (err.name === 'CastError') {
+      if (err.name === 'ValidationError') {
         next(new BadRequestError('Некорректные данные пользователя.'));
       } else {
         next(err);

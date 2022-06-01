@@ -14,11 +14,12 @@ module.exports.createMovie = (req, res, next) => {
     image,
     trailerLink,
     thumbnail,
-    owner,
     movieId,
     nameRU,
     nameEN,
   } = req.body;
+
+  const owner = req.user._id;
 
   Movie.create({
     country,
@@ -45,7 +46,8 @@ module.exports.createMovie = (req, res, next) => {
 
 // Возвращает все сохранённые текущим пользователем фильмы
 module.exports.getMovies = (req, res, next) => {
-  Movie.find({})
+  const owner = req.user._id;
+  Movie.find({ owner })
     .then((movies) => res.status(200).send(movies))
     .catch(next);
 };
@@ -60,8 +62,12 @@ module.exports.removeMovie = (req, res, next) => {
       if (movie.owner.valueOf() !== req.user._id) {
         throw new ForbiddenError('Фильм сохранен другим пользователем. Можно удалить только свою карточку.');
       }
-      movie.remove();
-      res.status(200).send({ message: 'Вы успешно удалили фильм из сохраненных фильмов!' });
+      return movie
+        .remove()
+        .then(() => {
+          res.status(200).send({ message: 'Вы успешно удалили фильм из сохраненных фильмов!' });
+        })
+        .catch((err) => next(err));
     })
     .catch((err) => {
       if (err.name === 'CastError') {

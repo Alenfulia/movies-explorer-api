@@ -19,7 +19,7 @@ const signIn = celebrate({
   }),
 });
 
-// Валидация создания карточки
+// Валидация добавления фильма в сохраненные
 const createMovieValidation = celebrate({
   body: Joi.object().keys({
     country: Joi.string().required(),
@@ -45,17 +45,16 @@ const createMovieValidation = celebrate({
       }
       return value;
     }).required(),
-    owner: Joi.string().required().length(24).hex(),
     movieId: Joi.number().required(),
     nameRU: Joi.string().required(),
     nameEN: Joi.string().required(),
   }),
 });
 
-// Валидация удаления карточки
+// Валидация удаления фильма и сохранненных
 const removeMovieValidation = celebrate({
   params: Joi.object().keys({
-    movieId: Joi.string().hex(),
+    movieId: Joi.string().length(24).hex(),
   }),
 });
 
