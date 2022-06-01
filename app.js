@@ -8,7 +8,7 @@ const router = require('./routes/index');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
 const errorHandler = require('./middlewares/errorHandler');
 
-const { DB, PORT } = process.env;
+const { DB = 'mongodb://localhost:27017/moviesdb', PORT = 3000 } = process.env;
 const app = express();
 
 mongoose.connect(DB, {
